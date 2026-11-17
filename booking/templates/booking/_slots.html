@@ -1,0 +1,10 @@
+{% if slots %}
+  <div class="slot-grid mb-3">
+    {% for s in slots %}
+      <div><input type="radio" name="start" id="s{{ forloop.counter }}" value="{{ s|date:'c' }}" required>
+      <label for="s{{ forloop.counter }}">{{ s|time:"H:i" }}</label></div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-light border"><i class="bi bi-calendar-x"></i> Không còn khung giờ trống trong ngày này (ngoài giờ làm, ngày nghỉ hoặc đã kín lịch). Hãy chọn ngày khác.</div>
+{% endif %}

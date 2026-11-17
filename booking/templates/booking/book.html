@@ -1,0 +1,51 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-calendar-plus"></i> Đặt lịch hẹn</h3>
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card p-4">
+      <form method="get" id="pick">
+        <div class="mb-3"><label class="form-label"><span class="step">1</span>Dịch vụ</label>
+          <select name="service" id="service" class="form-select" onchange="filterStaff(); this.form.submit()">
+            <option value="">— Chọn dịch vụ —</option>
+            {% for s in services %}<option value="{{ s.pk }}" {% if service and s.pk == service.pk %}selected{% endif %}>{{ s.name }} · {{ s.duration_minutes }}′ · {{ s.price|floatformat:"0g" }}đ</option>{% endfor %}
+          </select></div>
+        <div class="mb-3"><label class="form-label"><span class="step">2</span>Thợ</label>
+          <select name="staff" id="staff" class="form-select" onchange="this.form.submit()">
+            <option value="">— Chọn thợ —</option>
+            {% for st in staff_list %}<option value="{{ st.pk }}" data-services="{% for s in st.services.all %},{{ s.pk }}{% endfor %}," {% if staff and st.pk == staff.pk %}selected{% endif %}>{{ st }}</option>{% endfor %}
+          </select></div>
+        <div class="mb-1"><label class="form-label"><span class="step">3</span>Ngày</label>
+          <input type="date" name="date" class="form-control" value="{{ day|date:'Y-m-d' }}" min="{{ today|date:'Y-m-d' }}" max="{{ max_day|date:'Y-m-d' }}" onchange="this.form.submit()"></div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card p-4">
+      {% if service and staff %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <a class="btn btn-sm btn-outline-secondary {% if day <= today %}disabled{% endif %}" href="?service={{ service.pk }}&staff={{ staff.pk }}&date={{ prev_day|date:'Y-m-d' }}"><i class="bi bi-chevron-left"></i></a>
+          <h5 class="mb-0"><span class="step">4</span>Giờ trống – {{ day|date:"l, d/m/Y" }}</h5>
+          <a class="btn btn-sm btn-outline-secondary {% if day >= max_day %}disabled{% endif %}" href="?service={{ service.pk }}&staff={{ staff.pk }}&date={{ next_day|date:'Y-m-d' }}"><i class="bi bi-chevron-right"></i></a>
+        </div>
+        <p class="text-muted small">{{ service.name }} ({{ service.duration_minutes }} phút) với <b>{{ staff }}</b>. Giờ kết thúc được hệ thống tự tính.</p>
+        <form method="post">{% csrf_token %}
+          <input type="hidden" name="service" value="{{ service.pk }}"><input type="hidden" name="staff" value="{{ staff.pk }}">
+          {% include "booking/_slots.html" %}
+          {% if slots %}
+          <div class="mb-3"><input name="note" maxlength="255" class="form-control" placeholder="Ghi chú cho thợ (không bắt buộc)"></div>
+          <button class="btn btn-brand btn-lg"><i class="bi bi-check2-circle"></i> Xác nhận đặt lịch</button>
+          {% endif %}
+        </form>
+      {% else %}
+        <div class="text-center text-muted py-5"><i class="bi bi-hand-index fs-1"></i><p class="mt-2">Chọn dịch vụ và thợ để xem các khung giờ còn trống.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script>
+function filterStaff(){const sv=document.getElementById('service').value;const st=document.getElementById('staff');
+ [...st.options].forEach(o=>{if(!o.value)return;const ok=!sv||o.dataset.services.includes(','+sv+',');o.hidden=!ok;if(!ok&&o.selected)st.value='';});}
+filterStaff();
+</script>{% endblock %}

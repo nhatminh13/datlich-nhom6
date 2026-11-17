@@ -1,0 +1,31 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<h3 class="mb-3">Giờ làm việc & thời gian nghỉ – {{ staff }}</h3>
+<div class="row g-4">
+<div class="col-lg-6"><div class="card p-4">
+  <h5>Ca làm việc hằng tuần</h5>
+  <table class="table table-sm align-middle">{% for a in availabilities %}
+    <tr><td>{{ a.get_weekday_display }}</td><td>{{ a.start_time|time:"H:i" }} – {{ a.end_time|time:"H:i" }}</td>
+    <td class="text-end"><form method="post" action="{% url 'availability_delete' a.pk %}">{% csrf_token %}<button class="btn btn-sm btn-link text-danger">Xóa</button></form></td></tr>
+  {% empty %}<tr><td class="text-muted">Chưa có ca làm việc.</td></tr>{% endfor %}</table>
+  <form method="post" novalidate>{% csrf_token %}<div class="row g-2">
+    {% for field in a_form %}<div class="col-4"><label class="form-label small">{{ field.label }}</label>{{ field }}</div>{% endfor %}</div>
+    {% for e in a_form.non_field_errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+    {% for field in a_form %}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}{% endfor %}
+    <button name="add_availability" class="btn btn-brand btn-sm mt-2">Thêm ca</button></form>
+</div></div>
+<div class="col-lg-6"><div class="card p-4">
+  <h5>Thời gian nghỉ sắp tới</h5>
+  <table class="table table-sm align-middle">{% for t in time_offs %}
+    <tr><td>{{ t.start|date:"d/m H:i" }} → {{ t.end|date:"d/m H:i" }}</td><td class="small">{{ t.reason }}</td>
+    <td class="text-end"><form method="post" action="{% url 'timeoff_delete' t.pk %}">{% csrf_token %}<button class="btn btn-sm btn-link text-danger">Xóa</button></form></td></tr>
+  {% empty %}<tr><td class="text-muted">Không có.</td></tr>{% endfor %}</table>
+  <form method="post" novalidate>{% csrf_token %}<div class="row g-2">
+    {% for field in t_form %}<div class="col-{% if forloop.last %}12{% else %}6{% endif %}"><label class="form-label small">{{ field.label }}</label>{{ field }}</div>{% endfor %}</div>
+    {% for e in t_form.non_field_errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+    {% for field in t_form %}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}{% endfor %}
+    <button name="add_timeoff" class="btn btn-brand btn-sm mt-2">Thêm thời gian nghỉ</button></form>
+</div></div>
+</div>
+<a href="{% url 'staff_list' %}" class="btn btn-link mt-3">← Danh sách nhân viên</a>
+{% endblock %}

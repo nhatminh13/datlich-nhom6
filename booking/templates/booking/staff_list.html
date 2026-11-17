@@ -1,0 +1,14 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h3><i class="bi bi-people"></i> Quản lý nhân viên</h3>
+<a href="{% url 'staff_add' %}" class="btn btn-brand"><i class="bi bi-plus-lg"></i> Thêm nhân viên</a></div>
+<div class="card p-3"><table class="table align-middle mb-0">
+<thead><tr><th>Nhân viên</th><th>Dịch vụ</th><th>Giờ làm việc</th><th>Trạng thái</th><th></th></tr></thead><tbody>
+{% for st in staff_list %}<tr><td><b>{{ st }}</b><div class="small text-muted">{{ st.title }} · {{ st.user.username }}</div></td>
+<td class="small">{% for s in st.services.all %}<span class="badge text-bg-light border me-1">{{ s.name }}</span>{% endfor %}</td>
+<td class="small">{{ st.availabilities.all|length }} ca/tuần</td>
+<td>{% if st.is_active %}<span class="badge text-bg-success">Đang làm</span>{% else %}<span class="badge text-bg-secondary">Nghỉ việc</span>{% endif %}</td>
+<td class="text-end text-nowrap"><a href="{% url 'staff_hours' st.pk %}" class="btn btn-sm btn-outline-primary">Giờ làm & nghỉ</a>
+<a href="{% url 'staff_edit' st.pk %}" class="btn btn-sm btn-outline-secondary">Sửa</a></td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

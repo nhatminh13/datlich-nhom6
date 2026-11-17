@@ -1,0 +1,36 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<div class="row g-4">
+<div class="col-lg-7"><div class="card p-4">
+  <div class="d-flex justify-content-between"><h4>Lịch hẹn #{{ a.pk }}</h4><div class="fs-5">{% include "booking/_status.html" %}</div></div>
+  <dl class="row mb-0 mt-2">
+    <dt class="col-4">Dịch vụ</dt><dd class="col-8">{{ a.service.name }} ({{ a.service.duration_minutes }} phút)</dd>
+    <dt class="col-4">Thợ</dt><dd class="col-8">{{ a.staff }}</dd>
+    <dt class="col-4">Khách hàng</dt><dd class="col-8">{{ a.customer.display_name }} {% if a.customer.phone %}· {{ a.customer.phone }}{% endif %}</dd>
+    <dt class="col-4">Thời gian</dt><dd class="col-8">{{ a.start|date:"l, d/m/Y" }} · <b>{{ a.start|time:"H:i" }} – {{ a.end|time:"H:i" }}</b></dd>
+    {% if a.note %}<dt class="col-4">Ghi chú</dt><dd class="col-8">{{ a.note }}</dd>{% endif %}
+    {% if a.cancel_reason %}<dt class="col-4">Lý do hủy</dt><dd class="col-8">{{ a.cancel_reason }}</dd>{% endif %}
+  </dl>
+  <hr>
+  <div class="d-flex flex-wrap gap-2">
+    {% if can_change %}
+      <a href="{% url 'appointment_reschedule' a.pk %}" class="btn btn-outline-primary"><i class="bi bi-arrow-repeat"></i> Đổi lịch</a>
+      <form method="post" action="{% url 'appointment_cancel' a.pk %}" onsubmit="return confirm('Hủy lịch hẹn này?')">{% csrf_token %}
+        <button class="btn btn-outline-danger"><i class="bi bi-x-circle"></i> Hủy lịch</button></form>
+    {% elif user.is_customer and a.is_active %}
+      <div class="text-muted small">Lịch chỉ được hủy/đổi trước giờ hẹn ít nhất {{ deadline_hours }} giờ.</div>
+    {% endif %}
+    {% if can_handle and a.is_active %}
+      {% if a.status == "PENDING" %}<form method="post" action="{% url 'appointment_confirm' a.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="btn btn-primary">Xác nhận</button></form>{% endif %}
+      {% if a.status == "CONFIRMED" %}<form method="post" action="{% url 'appointment_complete' a.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="btn btn-success">Hoàn tất</button></form>{% endif %}
+      <form method="post" action="{% url 'appointment_cancel' a.pk %}" class="d-flex gap-2">{% csrf_token %}
+        <input name="reason" class="form-control form-control-sm" placeholder="Lý do hủy" required><button class="btn btn-outline-danger btn-sm text-nowrap">Hủy lịch</button></form>
+    {% endif %}
+  </div>
+</div></div>
+<div class="col-lg-5"><div class="card p-4"><h5>Nhật ký</h5>
+  <ul class="list-unstyled small mb-0">{% for l in logs %}
+    <li class="mb-2"><b>{{ l.created_at|date:"d/m H:i" }}</b> · {{ l.get_action_display|default:l.action }} – {{ l.actor.display_name }}{% if l.detail %}<br><span class="text-muted">{{ l.detail }}</span>{% endif %}</li>
+  {% endfor %}</ul></div></div>
+</div>
+{% endblock %}

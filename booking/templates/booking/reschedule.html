@@ -1,0 +1,15 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<div class="card p-4">
+  <h4>Đổi lịch hẹn #{{ a.pk }}</h4>
+  <p class="text-muted">Lịch hiện tại: {{ a.service.name }} với {{ a.staff }} lúc <b>{{ a.start|time:"H:i" }} {{ a.start|date:"d/m/Y" }}</b>. Nếu đổi không thành công, lịch cũ được giữ nguyên.</p>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a class="btn btn-sm btn-outline-secondary {% if day <= today %}disabled{% endif %}" href="?date={{ prev_day|date:'Y-m-d' }}"><i class="bi bi-chevron-left"></i></a>
+    <form method="get"><input type="date" name="date" class="form-control" value="{{ day|date:'Y-m-d' }}" min="{{ today|date:'Y-m-d' }}" max="{{ max_day|date:'Y-m-d' }}" onchange="this.form.submit()"></form>
+    <a class="btn btn-sm btn-outline-secondary {% if day >= max_day %}disabled{% endif %}" href="?date={{ next_day|date:'Y-m-d' }}"><i class="bi bi-chevron-right"></i></a>
+  </div>
+  <form method="post">{% csrf_token %}{% include "booking/_slots.html" %}
+    {% if slots %}<button class="btn btn-brand">Xác nhận đổi lịch</button>{% endif %}
+    <a href="{% url 'appointment_detail' a.pk %}" class="btn btn-link">Quay lại</a></form>
+</div>
+{% endblock %}

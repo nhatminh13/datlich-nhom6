@@ -1,0 +1,9 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-7">
+<div class="card p-4">
+  <h4 class="mb-3">{{ title }}</h4>
+  <form method="post" novalidate>{% csrf_token %}{% include "booking/_form_fields.html" %}
+    <button class="btn btn-brand">Lưu</button> <a href="{% url back %}" class="btn btn-link">Quay lại</a></form>
+</div></div></div>
+{% endblock %}

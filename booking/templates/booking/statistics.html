@@ -1,0 +1,24 @@
+{% extends "booking/base.html" %}
+{% block content %}
+<h3 class="mb-3"><i class="bi bi-bar-chart"></i> Thống kê số lượt theo ngày</h3>
+<form method="get" class="card p-3 mb-3"><div class="row g-2 align-items-end">
+  <div class="col-md-4"><label class="form-label small">Từ ngày</label><input type="date" name="from" value="{{ d_from|date:'Y-m-d' }}" class="form-control"></div>
+  <div class="col-md-4"><label class="form-label small">Đến ngày</label><input type="date" name="to" value="{{ d_to|date:'Y-m-d' }}" class="form-control"></div>
+  <div class="col-md-4"><button class="btn btn-brand w-100">Xem</button></div></div></form>
+<div class="row g-3 mb-3">
+  <div class="col"><div class="card p-3 text-center"><div class="small text-muted">Tổng lượt</div><div class="fs-3 fw-bold">{{ totals.total }}</div></div></div>
+  <div class="col"><div class="card p-3 text-center"><div class="small text-muted">Chờ xác nhận</div><div class="fs-3 fw-bold text-warning">{{ totals.pending }}</div></div></div>
+  <div class="col"><div class="card p-3 text-center"><div class="small text-muted">Đã xác nhận</div><div class="fs-3 fw-bold text-primary">{{ totals.confirmed }}</div></div></div>
+  <div class="col"><div class="card p-3 text-center"><div class="small text-muted">Hoàn tất</div><div class="fs-3 fw-bold text-success">{{ totals.completed }}</div></div></div>
+  <div class="col"><div class="card p-3 text-center"><div class="small text-muted">Đã hủy</div><div class="fs-3 fw-bold text-secondary">{{ totals.cancelled }}</div></div></div>
+</div>
+<div class="card p-3 mb-3"><table class="table table-sm align-middle mb-0">
+<thead><tr><th>Ngày</th><th style="width:35%"></th><th>Tổng</th><th>Chờ</th><th>Xác nhận</th><th>Hoàn tất</th><th>Hủy</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.day|date:"D d/m" }}</td><td><div class="stat-bar" style="width:{{ r.pct }}%"></div></td>
+<td><b>{{ r.total }}</b></td><td>{{ r.pending }}</td><td>{{ r.confirmed }}</td><td>{{ r.completed }}</td><td>{{ r.cancelled }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% if by_staff %}<div class="card p-3"><h5>Theo nhân viên</h5><table class="table table-sm mb-0">
+<thead><tr><th>Thợ</th><th>Tổng</th><th>Hoàn tất</th><th>Đã hủy</th></tr></thead><tbody>
+{% for s in by_staff %}<tr><td>{{ s.staff__user__first_name }}</td><td>{{ s.total }}</td><td>{{ s.completed }}</td><td>{{ s.cancelled }}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
+{% endblock %}

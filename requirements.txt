@@ -1,0 +1,3 @@
+Django>=5.0,<6.0
+# Bỏ comment dòng dưới khi dùng MySQL (DB_ENGINE=mysql)
+# mysqlclient>=2.2

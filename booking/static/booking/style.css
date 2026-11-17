@@ -1,0 +1,19 @@
+:root { --brand: #7b4b2a; --brand-2: #c08552; --bg: #faf6f1; }
+body { background: var(--bg); }
+.app-nav { background: linear-gradient(90deg, var(--brand), var(--brand-2)); }
+.hero { background: linear-gradient(135deg, #7b4b2a 0%, #c08552 100%); color: #fff; border-radius: 1.25rem; }
+.card { border: 0; border-radius: 1rem; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.btn-brand { background: var(--brand); color: #fff; border: 0; }
+.btn-brand:hover { background: #5f3a20; color: #fff; }
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: .5rem; }
+.slot-grid input { display: none; }
+.slot-grid label { display: block; text-align: center; padding: .55rem 0; border: 1px solid #d9c3ad;
+  border-radius: .6rem; background: #fff; cursor: pointer; font-weight: 600; transition: .15s; }
+.slot-grid label:hover { border-color: var(--brand); }
+.slot-grid input:checked + label { background: var(--brand); color: #fff; border-color: var(--brand); }
+.badge-PENDING { background: #f0ad4e; } .badge-CONFIRMED { background: #0d6efd; }
+.badge-COMPLETED { background: #198754; } .badge-CANCELLED { background: #6c757d; }
+.stat-bar { height: 10px; background: var(--brand-2); border-radius: 5px; }
+.service-card .price { color: var(--brand); font-weight: 700; }
+.step { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; margin-right: .4rem; }
