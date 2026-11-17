@@ -1,4 +1,5 @@
 {% extends "booking/base.html" %}
+{% load booking_extras %}
 {% block content %}
 <div class="hero p-5 mb-4">
   <h1 class="fw-bold">Tiệm tóc An Nhiên</h1>
@@ -21,7 +22,7 @@
       <div class="text-muted small mb-2">{{ s.description }}</div>
       <div class="mt-auto d-flex justify-content-between">
         <span><i class="bi bi-clock"></i> {{ s.duration_minutes }} phút</span>
-        <span class="price">{{ s.price|floatformat:"0g" }}đ</span>
+        <span class="price">{{ s.price|vnd }}đ</span>
       </div>
     </div>
   </div>
