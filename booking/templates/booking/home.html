@@ -1,41 +1,58 @@
 {% extends "booking/base.html" %}
 {% load booking_extras %}
 {% block content %}
-<div class="hero p-5 mb-4">
-  <h1 class="fw-bold">Tiệm tóc An Nhiên</h1>
-  <p class="lead mb-4">Xem giờ trống của từng thợ và đặt lịch chỉ trong vài giây – không cần gọi điện, không lo trùng lịch.</p>
+<section class="hero">
+  <div class="hero-oval"></div>
+  <div class="d-flex justify-content-center gap-2 flex-wrap mb-2">
+    <span class="hero-tag">NHÓM 6 — DỰ ÁN 08</span>
+    <span class="hero-tag">{{ services|length }} dịch vụ · {{ staff_list|length }} thợ</span>
+  </div>
+  <h1 class="hero-title">AN NHIÊN</h1>
+  <div class="weight-bar">
+    <span style="background:#fff7ea">Xem giờ trống</span>
+    <span style="background:#ffd23f">Đặt trong 30 giây</span>
+    <span style="background:#ff7a2f">Không trùng lịch</span>
+    <span style="background:#2ec4b6">Nhắc trạng thái</span>
+  </div>
+  <p class="hero-sub">Tiệm tóc An Nhiên — chọn dịch vụ, chọn thợ, chọn giờ còn trống. Không cần gọi điện, không lo trùng lịch.</p>
   {% if not user.is_authenticated %}
-    <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">Tạo tài khoản</a>
-    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Đăng nhập</a>
+    <a href="{% url 'register' %}" class="btn btn-brand btn-lg me-2">Tạo tài khoản</a>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">Đăng nhập</a>
   {% elif user.is_customer %}
-    <a href="{% url 'book' %}" class="btn btn-light btn-lg"><i class="bi bi-calendar-plus"></i> Đặt lịch ngay</a>
+    <a href="{% url 'book' %}" class="btn btn-brand btn-lg"><i class="bi bi-calendar-plus"></i> Đặt lịch ngay</a>
   {% else %}
-    <a href="{% url 'staff_schedule' %}" class="btn btn-light btn-lg"><i class="bi bi-calendar-week"></i> Xem lịch làm việc</a>
+    <a href="{% url 'staff_schedule' %}" class="btn btn-brand btn-lg"><i class="bi bi-calendar-week"></i> Xem lịch làm việc</a>
   {% endif %}
-</div>
-<h4 class="mb-3">Dịch vụ</h4>
-<div class="row g-3 mb-5">
+  <div class="sticker">Đặt lịch<br>miễn phí<br>✦</div>
+</section>
+
+<h4 class="section-title">✦ Dịch vụ</h4>
+<div class="row g-4 mb-5">
   {% for s in services %}
-  <div class="col-md-4 col-lg-3">
+  <div class="col-md-4">
     <div class="card service-card h-100 p-3">
-      <h6 class="fw-bold mb-1">{{ s.name }}</h6>
-      <div class="text-muted small mb-2">{{ s.description }}</div>
-      <div class="mt-auto d-flex justify-content-between">
-        <span><i class="bi bi-clock"></i> {{ s.duration_minutes }} phút</span>
-        <span class="price">{{ s.price|vnd }}đ</span>
+      <div class="top"></div>
+      <h5 class="mb-1">{{ s.name }}</h5>
+      <div class="small mb-3">{{ s.description }}</div>
+      <div class="mt-auto d-flex justify-content-between align-items-center">
+        <span class="badge" style="background:#fff"><i class="bi bi-clock"></i> {{ s.duration_minutes }} phút</span>
+        <span class="price fs-5">{{ s.price|vnd }}đ</span>
       </div>
     </div>
   </div>
-  {% empty %}<p class="text-muted">Chưa có dịch vụ.</p>{% endfor %}
+  {% empty %}<p class="text-white">Chưa có dịch vụ.</p>{% endfor %}
 </div>
-<h4 class="mb-3">Đội ngũ thợ</h4>
-<div class="row g-3">
+
+<h4 class="section-title">✦ Đội ngũ thợ</h4>
+<div class="row g-4">
   {% for st in staff_list %}
   <div class="col-md-4">
     <div class="card p-3 h-100">
-      <div class="d-flex align-items-center mb-2"><i class="bi bi-person-badge fs-3 me-2" style="color:var(--brand)"></i>
-        <div><div class="fw-bold">{{ st }}</div><div class="small text-muted">{{ st.title }}</div></div></div>
-      <div class="small">{% for s in st.services.all %}<span class="badge text-bg-light border me-1 mb-1">{{ s.name }}</span>{% endfor %}</div>
+      <div class="d-flex align-items-center mb-2">
+        <span class="avatar" style="background:{% cycle '#ffd23f' '#2ec4b6' '#ff7a2f' %}">{{ st.user.first_name|slice:":1" }}</span>
+        <div><h5 class="mb-0">{{ st }}</h5><div class="small">{{ st.title }}</div></div>
+      </div>
+      <div>{% for s in st.services.all %}<span class="badge me-1 mb-1" style="background:#fff">{{ s.name }}</span>{% endfor %}</div>
     </div>
   </div>
   {% endfor %}
